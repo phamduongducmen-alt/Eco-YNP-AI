@@ -1,0 +1,233 @@
+{
+  "entities": {
+    "UserPublicProfile": {
+      "title": "UserPublicProfile",
+      "description": "Public display identity metadata for an authenticated AI Life World user without PII.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Public display label",
+          "maxLength": 120
+        },
+        "provider": {
+          "type": "string",
+          "enum": ["google", "email", "phone"]
+        },
+        "photoUrl": {
+          "type": "string",
+          "description": "Optional avatar HTTPS URL",
+          "maxLength": 512
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "displayName", "provider", "createdAt", "updatedAt"]
+    },
+    "UserPrivateInfo": {
+      "title": "UserPrivateInfo",
+      "description": "Strictly isolated PII document containing verified email or phone identifiers.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "phoneNumber": {
+          "type": "string",
+          "maxLength": 32
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "updatedAt"]
+    },
+    "WellnessSyncDoc": {
+      "title": "WellnessSyncDoc",
+      "description": "Owner-scoped encrypted snapshot of AI Life World personal health, nutrition, fitness, language, and XP progress.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "schemaVersion": {
+          "type": "number"
+        },
+        "xp": {
+          "type": "number"
+        },
+        "level": {
+          "type": "number"
+        },
+        "streakDays": {
+          "type": "number"
+        },
+        "encryptedCiphertextHex": {
+          "type": "string",
+          "maxLength": 240000
+        },
+        "encryptedIvHex": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "encryptedAlgorithm": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "keyFingerprint": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "encryptedAt": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "ownerId",
+        "schemaVersion",
+        "xp",
+        "level",
+        "streakDays",
+        "encryptedCiphertextHex",
+        "encryptedIvHex",
+        "encryptedAlgorithm",
+        "keyFingerprint",
+        "encryptedAt",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "EncryptedJournalDoc": {
+      "title": "EncryptedJournalDoc",
+      "description": "Owner-scoped AES-256-GCM encrypted emotion journal and mood log.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "ownerId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "moodScore": {
+          "type": "number"
+        },
+        "moodLabel": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "encryptedCiphertextHex": {
+          "type": "string",
+          "maxLength": 60000
+        },
+        "encryptedIvHex": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "encryptedAlgorithm": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "keyFingerprint": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "encryptedAt": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "clientCreatedAt": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "ownerId",
+        "moodScore",
+        "moodLabel",
+        "encryptedCiphertextHex",
+        "encryptedIvHex",
+        "encryptedAlgorithm",
+        "keyFingerprint",
+        "encryptedAt",
+        "clientCreatedAt",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserPublicProfile"
+      },
+      "description": "Public non-PII user display metadata strictly owned by {userId}."
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": {
+        "$ref": "#/entities/UserPrivateInfo"
+      },
+      "description": "Split collection storing sensitive PII (email, phone) isolated to owner."
+    },
+    "/users/{userId}/wellnessSync/{docId}": {
+      "schema": {
+        "$ref": "#/entities/WellnessSyncDoc"
+      },
+      "description": "Owner-scoped encrypted wellness state snapshot for cross-device sync."
+    },
+    "/users/{userId}/encryptedJournals/{entryId}": {
+      "schema": {
+        "$ref": "#/entities/EncryptedJournalDoc"
+      },
+      "description": "Owner-scoped AES-256-GCM encrypted emotion journal entries."
+    }
+  }
+}

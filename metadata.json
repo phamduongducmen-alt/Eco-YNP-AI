@@ -1,0 +1,11 @@
+{
+  "name": "AI Life World",
+  "description": "Hệ sinh thái AI cá nhân toàn diện cho sức khỏe, tập luyện tại nhà, dinh dưỡng thông minh, học ngoại ngữ toàn cầu, thiền định và trò chơi rèn luyện trí tuệ.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
